@@ -1,82 +1,75 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd"
+	xmlns:beans="http://www.springframework.org/schema/beans">
 
-    <!-- Uncomment and your base-package here:
-         <context:component-scan
-            base-package="org.springframework.samples.web"/>  -->
-
-
-    <mvc:annotation-driven />
-
-	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-	        <!-- Example: a logical view name of 'showMessage' is mapped to '/WEB-INF/jsp/showMessage.jsp' -->
-	        <property name="prefix" value="/"/>
-	        <property name="suffix" value=".jsp"/>
+	<!-- Uncomment and your base-package here: <context:component-scan base-package="org.springframework.samples.web"/> -->
+	<mvc:annotation-driven />
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<!-- Example: a logical view name of 'showMessage' is mapped to '/WEB-INF/jsp/showMessage.jsp' -->
+		<property name="prefix" value="/" />
+		<property name="suffix" value=".jsp" />
 	</bean>
 
 	<!-- 컨트롤러 패키지 -->
-	<context:component-scan base-package="diet.controller"></context:component-scan>
-	<context:component-scan base-package="diet.service"></context:component-scan>
+	<context:component-scan
+		base-package="diet.controller"></context:component-scan>
+	<context:component-scan
+		base-package="diet.service"></context:component-scan>
 	<context:component-scan base-package="diet.dao"></context:component-scan>
-    <!-- 컨트롤러 패키지 /-->
-    
-    <!-- /라이브러리 -->
-	<mvc:resources mapping="/resources/**" location="/resources/" />
-<!-- 	
-		오라클 접속정보
-	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="driverClassName" value="oracle.jdbc.OracleDriver"></property>
-		<property name="url" value="jdbc:oracle:thin:@localhost:1521:orcl"></property>
-		<property name="username" value="sj"></property>
-		<property name="password" value="sj"></property>
+	<!-- 컨트롤러 패키지 / -->
+
+	<!-- /라이브러리 -->
+	<mvc:resources mapping="/resources/**"
+		location="/resources/" />
+
+
+
+	<!-- google Class Bean설정 추가 -->
+	<!-- 클라이언트ID와 보안비밀 세팅 -->
+	<bean id="googleConnectionFactory"
+		class="org.springframework.social.google.connect.GoogleConnectionFactory">
+		<constructor-arg
+			value="805585155237-oegvo0tr7ilo5fjh75dil9576jv4fbkf.apps.googleusercontent.com" /><!-- 
+			클라이언트 id -->
+		<constructor-arg value="qQOgMuHcSUzbrZ7s2vUgQWQX" /><!-- 
+			보안비밀 -->
+	</bean>
+	<!-- 승인된 자바스크립트 원본과 승인된 리디렉션 URI -->
+	<bean id="googleOAuth2Parameters"
+		class="org.springframework.social.oauth2.OAuth2Parameters">
+		<property name="scope"
+			value="https://www.googleapis.com/auth/plus.login" />
+		<property name="redirectUri"
+			value="http://localhost:8080/diet/login" />
+	</bean>
+	<!-- 구글 회원 탈퇴 리디렉션 URI -->
+	<bean id="googleOAuth2Parameters2"
+		class="org.springframework.social.oauth2.OAuth2Parameters">
+		<property name="scope"
+			value="https://www.googleapis.com/auth/plus.login" />
+		<property name="redirectUri"
+			value="http://localhost:8080/diet/googlesecession" />
 	</bean>
 
-	데이터소스로 쿼리실행 sqlSessionFactory
-	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-		<property name="dataSource" ref="dataSource"></property>
-		<property name="configLocation" value="classpath:mybatis-config.xml"></property>
-		<property name="mapperLocations" value="classpath:mappers/**/*Mapper.xml"></property>
-	</bean>
-
-	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate" destroy-method="clearCache">
-		<constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory"></constructor-arg>
-	</bean>
-	 -->
-	 
-	 
-	 <!-- google Class Bean설정 추가 -->
-<!-- 클라이언트ID와 보안비밀 세팅 -->
-<bean id="googleConnectionFactory" class="org.springframework.social.google.connect.GoogleConnectionFactory">
-  <constructor-arg value="805585155237-oegvo0tr7ilo5fjh75dil9576jv4fbkf.apps.googleusercontent.com" /><!-- 클라이언트 id -->
-  <constructor-arg value="qQOgMuHcSUzbrZ7s2vUgQWQX" /><!-- 보안비밀 -->
-</bean>
-
-<!-- 승인된 자바스크립트 원본과 승인된 리디렉션 URI -->
-<bean id="googleOAuth2Parameters"
-  class="org.springframework.social.oauth2.OAuth2Parameters">
-  <property name="scope" value="https://www.googleapis.com/auth/plus.login" />
-  <property name="redirectUri" value="http://localhost:8080/diet/login" />  
-</bean>
 
 
-
-<!-- INTERCEPTOR -->
+	<!-- INTERCEPTOR -->
 	<mvc:interceptors>
 		<mvc:interceptor>
-			<mvc:mapping path="/**"/>			
-			<bean class="diet.interceptors.Login_interceptor" />
-		</mvc:interceptor>		
-		</mvc:interceptors>
-<mvc:interceptors>
-		<mvc:interceptor>
-			<mvc:mapping path="/**"/>			
-			<bean class="diet.interceptors.Admin_interceptor" />
-		</mvc:interceptor>		
-		</mvc:interceptors>
+			<mvc:mapping path="/main" />
+			<bean class="diet.interceptors.Main_interceptor" />
+		</mvc:interceptor>
+	</mvc:interceptors>
+
+	<!-- <mvc:interceptors> <mvc:interceptor> <mvc:mapping path="/diet/**"/> 
+		<bean class="diet.interceptors.Admin_interceptor" /> </mvc:interceptor> </mvc:interceptors> -->
 
 </beans>

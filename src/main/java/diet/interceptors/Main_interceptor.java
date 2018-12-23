@@ -8,17 +8,18 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-public class Login_interceptor implements HandlerInterceptor {
+public class Main_interceptor implements HandlerInterceptor {
 
 	@Override
-	public boolean preHandle(HttpServletRequest req, HttpServletResponse res, Object o) throws Exception {	
-		//로그인 확인
-		if(Objects.isNull(req.getSession().getAttribute("loginid"))) {
+	public boolean preHandle(HttpServletRequest req, HttpServletResponse res, Object o) throws Exception {
+		// 로그인 확인
+		if (Objects.isNull(req.getSession().getAttribute("loginEmail"))) {
 			System.out.println("login No");
-			res.sendRedirect("/index");	        	     
-					return false;	       
+			res.sendRedirect("/diet");
+			return false;
 		} else {
-			//로그인 되어있음
+			System.out.println("로그인 되어있음 : "+req.getSession().getAttribute("loginEmail"));
+			// 로그인 되어있음
 			return true;
 		}
 	}

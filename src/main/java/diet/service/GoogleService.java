@@ -6,7 +6,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.social.connect.Connection;
@@ -20,28 +19,28 @@ import org.springframework.social.oauth2.GrantType;
 import org.springframework.social.oauth2.OAuth2Operations;
 import org.springframework.social.oauth2.OAuth2Parameters;
 import org.springframework.stereotype.Repository;
-import org.springframework.ui.Model;
 @Repository
 public class GoogleService {
 	  @Autowired private GoogleConnectionFactory googleConnectionFactory;
 	  @Autowired  private OAuth2Parameters googleOAuth2Parameters;
 	  
-	  
-	  public  String mygoogleget(String code) {
+	
+
+	public  String mygoogleget(String code) {
 		  
 		return "";} 
 	    
 	 //googlr로그인url
-	public void joniurl(Model model, HttpServletRequest request) {
+	public String googlelogin(HttpServletRequest request) {
 		OAuth2Operations oauthOperations = googleConnectionFactory.getOAuthOperations();
-	        String url = oauthOperations.buildAuthenticateUrl(GrantType.AUTHORIZATION_CODE, googleOAuth2Parameters);	
-	        model.addAttribute("google_url", url);	
-	        
+	        String url = oauthOperations.buildAuthenticateUrl(GrantType.AUTHORIZATION_CODE, googleOAuth2Parameters);		      
 	        //로그인url세션저장
-	        request.getSession().setAttribute("loginurl",url);
+	        request.getSession().setAttribute("googleurl",url);
+	        
+			return url;
 	}
 	//로그인 code
-	public void googlelogin(String code, HttpServletRequest request) {
+	protected Person googlelogin(String code) {
 		OAuth2Operations oauthOperations = googleConnectionFactory.getOAuthOperations();
 		AccessGrant accessGrant = oauthOperations.exchangeForAccess(code, googleOAuth2Parameters.getRedirectUri(),null);
 		String accessToken = accessGrant.getAccessToken();
@@ -55,15 +54,30 @@ public class GoogleService {
 		PlusOperations plusOperations = google.plusOperations();
 		Person profile = plusOperations.getGoogleProfile();
 		
-		 MemberService.logindata(profile,request);
+		System.out.println("User Uid : " + profile.getId());
+        System.out.println("User Name : " + profile.getDisplayName());
+        System.out.println("User Email : " + profile.getAccountEmail());
+        System.out.println("User Profile : " + profile.getImageUrl());
+		 
+		return profile;
 
 	}
-
 	
-	//엑센스 취소(구글로그인 탈퇴)
-	public void AccessToken(String code, HttpServletRequest request) {
+	
+	
+	//엑센스 취소(구글가입 탈퇴)
+	  @Autowired  private OAuth2Parameters googleOAuth2Parameters2;
+	  
+	  public String googlesecessionurl() {
+			OAuth2Operations oauthOperations = googleConnectionFactory.getOAuthOperations();
+		        String url = oauthOperations.buildAuthenticateUrl(GrantType.AUTHORIZATION_CODE, googleOAuth2Parameters2);			       
+		        System.out.println(url);		        
+				return url;		        
+		}
+	
+	public void googlesecession(String code) {
 		OAuth2Operations oauthOperations = googleConnectionFactory.getOAuthOperations();
-		AccessGrant accessGrant = oauthOperations.exchangeForAccess(code, googleOAuth2Parameters.getRedirectUri(),null);
+		AccessGrant accessGrant = oauthOperations.exchangeForAccess(code, googleOAuth2Parameters2.getRedirectUri(),null);
 		String accessToken = accessGrant.getAccessToken();
 		 // Access Token 취소		
         try {
