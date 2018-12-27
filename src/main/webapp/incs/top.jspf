@@ -56,13 +56,14 @@
               <a class="nav-link js-scroll-trigger" href="#team">Team</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="#contact">Contact</a>
-              
+              <a class="nav-link js-scroll-trigger" href="#contact">Contact</a>             
             </li>
              <li class="nav-item">
              <a href="${pageContext.request.contextPath}/logout">로그아웃</a>             
             </li>
-           
+            <li class="nav-item">
+            ${sessionScope.googlesecessionurl}
+           <a href="${sessionScope.googlesecessionurl}">탈퇴</a>         
           </ul>
         </div>
       </div>

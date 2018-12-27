@@ -23,21 +23,18 @@ import org.springframework.stereotype.Repository;
 public class GoogleService {
 	  @Autowired private GoogleConnectionFactory googleConnectionFactory;
 	  @Autowired  private OAuth2Parameters googleOAuth2Parameters;
-	  
-	
+	  @Autowired  private OAuth2Parameters googleOAuth2Parameters2;	 	//구글 엑센스 취소
 
-	public  String mygoogleget(String code) {
-		  
-		return "";} 
-	    
 	 //googlr로그인url
-	public String googlelogin(HttpServletRequest request) {
+	public void googlelogin(HttpServletRequest request) {
+		
 		OAuth2Operations oauthOperations = googleConnectionFactory.getOAuthOperations();
-	        String url = oauthOperations.buildAuthenticateUrl(GrantType.AUTHORIZATION_CODE, googleOAuth2Parameters);		      
-	        //로그인url세션저장
-	        request.getSession().setAttribute("googleurl",url);
-	        
-			return url;
+	        String url = oauthOperations.buildAuthenticateUrl(GrantType.AUTHORIZATION_CODE, googleOAuth2Parameters);		      	  	  
+	        String url2 = oauthOperations.buildAuthenticateUrl(GrantType.AUTHORIZATION_CODE, googleOAuth2Parameters2);	//엑센트 취소
+	    
+	        request.getSession().setAttribute("googleurl",url);	   	       
+	        request.getSession().setAttribute("googlesecessionurl",url2);
+		
 	}
 	//로그인 code
 	protected Person googlelogin(String code) {
@@ -60,21 +57,10 @@ public class GoogleService {
         System.out.println("User Profile : " + profile.getImageUrl());
 		 
 		return profile;
-
 	}
 	
 	
-	
-	//엑센스 취소(구글가입 탈퇴)
-	  @Autowired  private OAuth2Parameters googleOAuth2Parameters2;
-	  
-	  public String googlesecessionurl() {
-			OAuth2Operations oauthOperations = googleConnectionFactory.getOAuthOperations();
-		        String url = oauthOperations.buildAuthenticateUrl(GrantType.AUTHORIZATION_CODE, googleOAuth2Parameters2);			       
-		        System.out.println(url);		        
-				return url;		        
-		}
-	
+	//엑센스 취소
 	public void googlesecession(String code) {
 		OAuth2Operations oauthOperations = googleConnectionFactory.getOAuthOperations();
 		AccessGrant accessGrant = oauthOperations.exchangeForAccess(code, googleOAuth2Parameters2.getRedirectUri(),null);
@@ -95,9 +81,10 @@ public class GoogleService {
                 response.append(inputLine);
             }
             in.close();
-        } catch (Exception e) {
- 
+        } catch (Exception e) { 
             e.printStackTrace();
         }	
 	}
+	
+	
 }

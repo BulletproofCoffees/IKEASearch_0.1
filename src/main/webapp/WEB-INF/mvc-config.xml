@@ -36,27 +36,18 @@
 	<!-- 클라이언트ID와 보안비밀 세팅 -->
 	<bean id="googleConnectionFactory"
 		class="org.springframework.social.google.connect.GoogleConnectionFactory">
-		<constructor-arg
-			value="805585155237-oegvo0tr7ilo5fjh75dil9576jv4fbkf.apps.googleusercontent.com" /><!-- 
-			클라이언트 id -->
-		<constructor-arg value="qQOgMuHcSUzbrZ7s2vUgQWQX" /><!-- 
-			보안비밀 -->
+		<constructor-arg value="805585155237-oegvo0tr7ilo5fjh75dil9576jv4fbkf.apps.googleusercontent.com" /><!-- 클라이언트 id -->
+		<constructor-arg value="qQOgMuHcSUzbrZ7s2vUgQWQX" /><!-- 보안비밀 -->
 	</bean>
 	<!-- 승인된 자바스크립트 원본과 승인된 리디렉션 URI -->
-	<bean id="googleOAuth2Parameters"
-		class="org.springframework.social.oauth2.OAuth2Parameters">
-		<property name="scope"
-			value="https://www.googleapis.com/auth/plus.login" />
-		<property name="redirectUri"
-			value="http://localhost:8080/diet/login" />
+	<bean id="googleOAuth2Parameters" class="org.springframework.social.oauth2.OAuth2Parameters">
+		<property name="scope" value="https://www.googleapis.com/auth/plus.login" />
+		<property name="redirectUri" value="http://localhost:8080/diet/login" />
 	</bean>
 	<!-- 구글 회원 탈퇴 리디렉션 URI -->
-	<bean id="googleOAuth2Parameters2"
-		class="org.springframework.social.oauth2.OAuth2Parameters">
-		<property name="scope"
-			value="https://www.googleapis.com/auth/plus.login" />
-		<property name="redirectUri"
-			value="http://localhost:8080/diet/googlesecession" />
+	<bean id="googleOAuth2Parameters2" class="org.springframework.social.oauth2.OAuth2Parameters">
+		<property name="scope" value="https://www.googleapis.com/auth/plus.login" />
+		<property name="redirectUri" value="http://localhost:8080/diet/googlesecession" />
 	</bean>
 
 

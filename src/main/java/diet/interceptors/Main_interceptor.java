@@ -13,12 +13,12 @@ public class Main_interceptor implements HandlerInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest req, HttpServletResponse res, Object o) throws Exception {
 		// 로그인 확인
-		if (Objects.isNull(req.getSession().getAttribute("loginEmail"))) {
+		if (Objects.isNull(req.getSession().getAttribute("loginName"))) {
 			System.out.println("login No");
 			res.sendRedirect("/diet");
 			return false;
 		} else {
-			System.out.println("로그인 되어있음 : "+req.getSession().getAttribute("loginEmail"));
+			System.out.println("로그인 되어있음 : "+req.getSession().getAttribute("loginName"));
 			// 로그인 되어있음
 			return true;
 		}

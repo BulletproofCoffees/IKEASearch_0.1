@@ -19,4 +19,18 @@ email = #{email}
 and
 PW = #{pw}
 </select>
+
+<select id="joinsearch" resultType="String">
+SELECT
+email
+FROM member
+where
+email = #{email}
+</select>
+
+<insert id="g_login">
+ 
+ </insert>
+
+
 </mapper>

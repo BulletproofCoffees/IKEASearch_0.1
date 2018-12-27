@@ -17,17 +17,27 @@ import diet.dao.MemberDAO;
 public class MemberService {
 	@Inject private GoogleService googleservice;
 	@Inject private MemberDAO memberDao;	
+	
 	HashMap<Object, String> map = new HashMap<>();
 	
-	// 세션삭제
-	private void session(HttpServletRequest request) {
+	// 로그아웃,세션삭제
+	public void loguot(HttpServletRequest request) {
+		System.out.println("loguot");
 		HttpSession session = request.getSession();
 		session.removeAttribute("loginName");
+	}	
+	//세션 생성
+	public void session(HttpServletRequest request,String dite) {
+		request.getSession().setAttribute("loginName", dite);
 	}
+
+	
+	
 	
 	// 로그인
 	public String login(String code, String pw, String email, Model m, HttpServletRequest request) {		
-		session(request);// 세션삭제
+		// 세션삭제
+		loguot(request);
 		String loginName = null;
 
 		if (Objects.isNull(code)) {			
@@ -37,7 +47,10 @@ public class MemberService {
 		} else {
 			// 구글 가입및 로그인
 			Person profile = googleservice.googlelogin(code);
-			loginName = profile.getDisplayName();
+			loginName = profile.getDisplayName();				
+			map.put("email", profile.getAccountEmail());	
+			map.put("name",  loginName);		
+			memberDao.Glogin(map);
 		}
 
 		if (Objects.isNull(loginName)) {
@@ -47,23 +60,57 @@ public class MemberService {
 			return "index";			
 		} else {
 			// 세션
-			request.getSession().setAttribute("loginName", loginName);
-		}
-		return "view/main";
-
+			session(request,loginName);
+			return "view/main";
+		}		
 	}
-	// 로그아웃
-	public void loguot(HttpServletRequest request) {
-	     session(request);// 세션삭제
-	}
+	
 
 //회원 가입
-	public void join(String name, String email, String pw, HttpServletRequest request) {
-		map.put("name", name);
-		map.put("email", email);
-		map.put("pw", pw);	
-		memberDao.join(map);
-		//프로시져를 만들자!!
+	public String join(String name, String email, String pw,HttpServletRequest request, Model m) {
+		map.put("email", email);	
+		String joinsearch = memberDao.emailsearch(map);
+		
+		if(Objects.isNull(joinsearch)) {
+			map.put("name", name);		
+			map.put("pw", pw);
+			memberDao.join(map);//가입				
+			session(request,email);		
+			return "view/main";			
+		}else {
+			String message = "이미 가입되어 이메일 입니다. 다른 이메일 가입에주세요";
+			m.addAttribute("idxmessage", message);			
+			return "index";		
+		}
+		
 	}
 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
