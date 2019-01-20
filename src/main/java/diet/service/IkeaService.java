@@ -6,52 +6,80 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.StringTokenizer;
 
+import javax.inject.Inject;
 import javax.servlet.ServletRequest;
 
+import org.apache.ibatis.session.SqlSession;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public class IkeaService {
+	String Serviceurl = "https://www.ikea.com/kr/ko/catalog/categories/departments/living_room/";
 
-	public String ikeaapi(ServletRequest request) throws IOException {
+	public void ikeaapi(ServletRequest request) throws IOException {
 
+		Document url = Jsoup.connect(Serviceurl + "39130/").get();
+		Elements tagVal = url
+				.select("div#allContent div#mainPadding div#main div#filtersAndProductsDiv div.productLists ");
 		
-		 StringBuilder urlBuilder = new StringBuilder("https://www.ikea.com/kr/ko/catalog/categories/departments/living_room/39130/"); /*URL*/ 
-        /* urlBuilder.append("?" + URLEncoder.encode("query","UTF-8") + "=" + URLEncoder.encode("의자", "UTF-8")); 식품이름*/
+		
+		// 가구코드
+		Elements select = tagVal.select("a[class=productLink]");
+		List<String> href = new ArrayList<>();
+		for (Element a : select) {
+			String target = "/kr/ko/catalog/products/";
+			int of = target.length();
+			href.add(a.attr("href").substring(of));
+		}
+		System.out.println("가구코드 : " + href);
 
-        URL url = new URL(urlBuilder.toString());
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("GET");
-        conn.setRequestProperty("Content-type", "application/json");
-      /*  System.out.println("Response code: " + conn.getResponseCode());*/
-        BufferedReader rd;
-        if(conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
-            rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-        } else {
-            rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
-        }
-        StringBuilder sb = new StringBuilder();
-        String line;
-        while ((line = rd.readLine()) != null) {
-            sb.append(line);
-        }
-        rd.close();
-        conn.disconnect();        
-        request.setAttribute("xml", sb.toString());	           		
-	System.out.println(sb.toString());
-	
-	
-	Document doc = Jsoup.parse(sb.toString());
-	Element body = doc.body();
-	System.out.println(body);
-	
-		return sb.toString();		
+		// 가구명
+		Elements img = tagVal.select("img[class=prodImg]");
+		List<String> alt = new ArrayList<>();
+		for (Element a : img) {
+			alt.add(a.attr("alt"));
+		}
+		System.out.println("가구명 : " + alt);
+		// 이미지
+		List<String> imglest = new ArrayList<>();
+		for (Element elem : img) {
+			if (!elem.attr("src").equals(elem.attr("abs:src"))) {
+				imglest.add(elem.attr("src", elem.attr("abs:src")).toString());
+			}
+		}
+		System.out.println("이미지: " + imglest);
+
+		// 가격
+		List<String> pricelist = new ArrayList<>();
+		Elements price = tagVal.select("span.price");
+		for (Element element : price) {
+			pricelist.add(element.text());
+		}
+		System.out.println("가격: " + pricelist);
+
+		List<Map<String, String>> list = new ArrayList<>();
+		for (int i = 0; i < href.size(); i++) {
+			Map<String, String> m = new HashMap<>();
+			m.put("href", href.get(i).toString());
+			m.put("alt", alt.get(i).toString());
+			m.put("imglest", imglest.get(i).toString());
+			m.put("pricelist", pricelist.get(i).toString());
+			list.add(m);
+
+		}
+		request.setAttribute("ikea", list);
+
 	}
-	
+
 }

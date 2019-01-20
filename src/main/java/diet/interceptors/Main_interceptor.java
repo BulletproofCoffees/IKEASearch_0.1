@@ -15,7 +15,7 @@ public class Main_interceptor implements HandlerInterceptor {
 		// 로그인 확인
 		if (Objects.isNull(req.getSession().getAttribute("loginName"))) {
 			System.out.println("login No");
-			res.sendRedirect("/diet");
+			res.sendRedirect("/IKEASearch");
 			return false;
 		} else {
 			System.out.println("로그인 되어있음 : "+req.getSession().getAttribute("loginName"));

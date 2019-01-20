@@ -2,7 +2,9 @@ package diet.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -63,7 +65,7 @@ public class test {
 				imglest.add(elem.attr("src", elem.attr("abs:src")).toString());			
 			}
 		}
-		System.out.println("이미지: " + imglest);	
+		System.out.println("이미지: " + imglest.get(0).toString());	
 		
 		
 		// 가격
@@ -74,7 +76,22 @@ public class test {
 		}
 		System.out.println("가격: " + pricelist);
 		
-        
+
+		
+		
+		List<Map<String, String>> list = new ArrayList<>();
+for (int i = 0; i < href.size(); i++) {
+	Map<String, String> m = new HashMap<>();		
+	m.put("href", href.get(i).toString());
+	m.put("alt", alt.get(i).toString());
+	m.put("imglest", imglest.get(i).toString());
+	m.put("pricelist", pricelist.get(i).toString());
+	list.add(m);	
+}
+
+
+System.out.println(list.toString());
+
 
 
 

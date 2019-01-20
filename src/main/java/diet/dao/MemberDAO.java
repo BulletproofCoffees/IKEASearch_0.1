@@ -24,6 +24,7 @@ public class MemberDAO {
 	}
     //로그인
 	public  String login(HashMap<Object, String> map) {	
+		System.out.println(map);
 		return session.selectOne(mapper +"login", map);
 		
 	}

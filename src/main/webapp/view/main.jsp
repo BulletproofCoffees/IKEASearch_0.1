@@ -5,13 +5,33 @@
 
 <span id="food_title"></span>
 <div id="nutrition_panel"></div>
-${ikea}
+
+
+
+
+										
+<c:forEach items="${ikea}" var="ikea">
+
+<P>${ikea.imglest}</P>
+<P>${ikea.href}</P>
+<P>${ikea.alt}</P>
+<P>${ikea.pricelist}</P>
+
+</c:forEach>
+
+
+
+<div class="imglest">
+</div>
+
+
 <script>
-$(function(){
+/* $(function(){
 	var a =  $('#productLists'); 
     alert(a); 
+}); */
 
-}
+
 </script>
 <script>
 fatsecret.addRef("foodtitle", "food_title");
